@@ -73,7 +73,7 @@ public class MazeSolverUI extends JFrame {
         updateButton.setBackground(new Color(37, 99, 235));
         updateButton.setForeground(Color.WHITE);
         updateButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-        updateButton.addActionListener(_ -> resetMaze()); // Corrección aquí
+        updateButton.addActionListener(_ -> resetMaze());
 
         JPanel algorithmPanel = createAlgorithmPanel();
 
@@ -179,10 +179,10 @@ public class MazeSolverUI extends JFrame {
 
         for (String algorithm : algorithms) {
             JButton button = new JButton(algorithm);
-            button.setBackground(new Color(37, 99, 235));
+            button.setBackground(new Color(37, 99, 235)); // Color azul uniforme
             button.setForeground(Color.WHITE);
             button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-            button.addActionListener(_ -> actions.get(algorithm).run()); // Corrección aquí
+            button.addActionListener(_ -> actions.get(algorithm).run());
             panel.add(button);
         }
 
@@ -284,40 +284,57 @@ public class MazeSolverUI extends JFrame {
             Cell[] cells = getCellsFromFields();
             Cell start = cells[0];
             Cell end = cells[1];
-
+    
             if (!validateCells(start, end)) {
                 JOptionPane.showMessageDialog(this, "Celdas inválidas.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
+    
             MazeSolverExtra solver = new MazeSolverExtra();
             List<List<Cell>> allPaths = solver.getAllPaths(grid, start, end);
-
+    
             if (allPaths.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "No se encontró ningún camino.", "Resultado", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-
+    
             resetCellColors();
-
-            for (List<Cell> path : allPaths) {
-                for (Cell cell : path) {
-                    if (grid[cell.row][cell.col]) {
+    
+            if (delayCheckBox.isSelected()) {
+                new SwingWorker<Void, Cell>() {
+                    @Override
+                    protected Void doInBackground() {
+                        for (List<Cell> path : allPaths) {
+                            for (Cell cell : path) {
+                                publish(cell);
+                                try {
+                                    Thread.sleep(200); // Retraso para animación
+                                } catch (InterruptedException e) {
+                                    Thread.currentThread().interrupt();
+                                }
+                            }
+                        }
+                        return null;
+                    }
+    
+                    @Override
+                    protected void process(List<Cell> chunks) {
+                        for (Cell cell : chunks) {
+                            JPanel cellPanel = getCellPanel(cell.row, cell.col);
+                            cellPanel.setBackground(allPaths.indexOf(chunks) == 0 ? Color.GREEN : Color.YELLOW);
+                            mazePanel.repaint();
+                        }
+                    }
+                }.execute();
+            } else {
+                for (List<Cell> path : allPaths) {
+                    for (Cell cell : path) {
                         JPanel cellPanel = getCellPanel(cell.row, cell.col);
-                        cellPanel.setBackground(path == allPaths.get(0) ? Color.GREEN : Color.YELLOW);
+                        cellPanel.setBackground(path == allPaths.get(0) ? Color.YELLOW : Color.GREEN);
                     }
                 }
             }
-
-            for (int i = 0; i < grid.length; i++) {
-                for (int j = 0; j < grid[0].length; j++) {
-                    JPanel cellPanel = getCellPanel(i, j);
-                    if (grid[i][j] && cellPanel.getBackground() != Color.GREEN && cellPanel.getBackground() != Color.YELLOW) {
-                        cellPanel.setBackground(Color.WHITE);
-                    }
-                }
-            }
-
+    
             highlightStartEndCells();
             JOptionPane.showMessageDialog(this, "Todos los caminos mostrados.", "Resultado", JOptionPane.INFORMATION_MESSAGE);
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
