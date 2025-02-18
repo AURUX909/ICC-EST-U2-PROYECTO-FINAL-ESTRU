@@ -73,7 +73,7 @@ public class MazeSolverUI extends JFrame {
         updateButton.setBackground(new Color(37, 99, 235));
         updateButton.setForeground(Color.WHITE);
         updateButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-        updateButton.addActionListener(e -> resetMaze());
+        updateButton.addActionListener(_ -> resetMaze()); // Corrección aquí
 
         JPanel algorithmPanel = createAlgorithmPanel();
 
@@ -182,7 +182,7 @@ public class MazeSolverUI extends JFrame {
             button.setBackground(new Color(37, 99, 235));
             button.setForeground(Color.WHITE);
             button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-            button.addActionListener(e -> actions.get(algorithm).run());
+            button.addActionListener(_ -> actions.get(algorithm).run()); // Corrección aquí
             panel.add(button);
         }
 
