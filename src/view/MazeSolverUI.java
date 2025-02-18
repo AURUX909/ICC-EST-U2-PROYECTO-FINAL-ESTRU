@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicButtonUI;
 
 import models.*;
 
@@ -58,25 +59,83 @@ public class MazeSolverUI extends JFrame {
         setTitle("Maze Solver");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        getContentPane().setBackground(new Color(17, 24, 39));
-
+        getContentPane().setBackground(new Color(31, 41, 55));
+    
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBackground(new Color(31, 41, 55));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
+    
         createMazeGrid();
-
+    
         JPanel controlPanel = createControlPanel();
-
+    
+        // Color armonizado con la interfaz
+        Color buttonColor = new Color(31, 41, 55); 
+    
         JButton updateButton = new JButton("Actualizar Coordenadas");
-        updateButton.setBackground(new Color(37, 99, 235));
+        updateButton.setOpaque(true);
+        updateButton.setContentAreaFilled(true);
+        updateButton.setBorderPainted(true);
+        updateButton.setFocusPainted(false);
+        
+        updateButton.setBackground(buttonColor);
         updateButton.setForeground(Color.WHITE);
-        updateButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+        updateButton.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 1));
+        updateButton.setFont(new Font("Arial", Font.BOLD, 12));
+        
+        // Aplicamos el mismo tratamiento que a los botones de algoritmos
+        updateButton.setUI(new BasicButtonUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Forzar el color de fondo
+                g2d.setColor(c.getBackground());
+                g2d.fillRect(0, 0, c.getWidth(), c.getHeight());
+                
+                // Forzar el texto con contraste adecuado
+                g2d.setColor(c.getForeground());
+                FontMetrics fm = g2d.getFontMetrics();
+                String text = ((JButton)c).getText();
+                int textWidth = fm.stringWidth(text);
+                int textHeight = fm.getHeight();
+                g2d.drawString(text, (c.getWidth() - textWidth) / 2, 
+                              (c.getHeight() + textHeight / 2) / 2);
+                
+                // Dibujar el borde
+                g2d.setColor(new Color(87, 76, 222));
+                g2d.drawRect(0, 0, c.getWidth() - 1, c.getHeight() - 1);
+                
+                g2d.dispose();
+            }
+        });
+        
+        // Agregar efecto hover
+        updateButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                Color hoverColor = new Color(
+                    Math.min(buttonColor.getRed() + 20, 255),
+                    Math.min(buttonColor.getGreen() + 20, 255),
+                    Math.min(buttonColor.getBlue() + 20, 255)
+                );
+                updateButton.setBackground(hoverColor);
+                updateButton.repaint();
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                updateButton.setBackground(buttonColor);
+                updateButton.repaint();
+            }
+        });
+        
         updateButton.addActionListener(_ -> resetMaze());
-
+    
         JPanel algorithmPanel = createAlgorithmPanel();
-
+    
         mainPanel.add(mazePanel);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         mainPanel.add(controlPanel);
@@ -84,7 +143,7 @@ public class MazeSolverUI extends JFrame {
         mainPanel.add(updateButton);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         mainPanel.add(algorithmPanel);
-
+    
         add(new JScrollPane(mainPanel));
         setSize(800, 900);
         setLocationRelativeTo(null);
@@ -164,29 +223,98 @@ public class MazeSolverUI extends JFrame {
     }
 
     private JPanel createAlgorithmPanel() {
-        JPanel panel = new JPanel(new GridLayout(1, 6, 5, 0));
-        panel.setBackground(new Color(31, 41, 55));
-        String[] algorithms = {"BFS", "DFS", "Recursivo", "Cache", "Extra", "Reset"};
+    JPanel panel = new JPanel(new GridLayout(1, 6, 5, 0));
+    panel.setBackground(new Color(31, 41, 55));
+    String[] algorithms = {"BFS", "DFS", "Recursivo", "Cache", "Extra", "Reset"};
 
-        Map<String, Runnable> actions = Map.of(
-                "BFS", () -> solveMaze(new MazeSolverBFS()),
-                "DFS", () -> solveMaze(new MazeSolverDFS()),
-                "Recursivo", () -> solveMaze(new MazeSolverRecursivo()),
-                "Cache", () -> solveMaze(new MazeSolverCache()),
-                "Extra", this::solveAllPaths,
-                "Reset", this::resetMaze
-        );
+    Map<String, Runnable> actions = Map.of(
+            "BFS", () -> solveMaze(new MazeSolverBFS()),
+            "DFS", () -> solveMaze(new MazeSolverDFS()),
+            "Recursivo", () -> solveMaze(new MazeSolverRecursivo()),
+            "Cache", () -> solveMaze(new MazeSolverCache()),
+            "Extra", this::solveAllPaths,
+            "Reset", this::resetMaze
+    );
+    
+    //Colores de los botones
+    Map<String, Color> buttonColors = Map.of(
+            "BFS", new Color(31, 41, 55),        
+            "DFS", new Color(31, 41, 55),        
+            "Recursivo", new Color(31, 41, 55),  
+            "Cache", new Color(31, 41, 55),      
+            "Extra", new Color(31, 41, 55),      
+            "Reset", new Color(31, 41, 55)        
+    );
 
-        for (String algorithm : algorithms) {
-            JButton button = new JButton(algorithm);
-            button.setBackground(new Color(37, 99, 235)); // Color azul uniforme
-            button.setForeground(Color.WHITE);
-            button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-            button.addActionListener(_ -> actions.get(algorithm).run());
-            panel.add(button);
-        }
+    for (String algorithm : algorithms) {
+        JButton button = new JButton(algorithm);
+        
+        Color normalColor = buttonColors.get(algorithm);
+        
+        // Configuración crítica para asegurar el renderizado correcto
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+        button.setBorderPainted(true);
+        button.setFocusPainted(false);
+        
+        button.setBackground(normalColor);
+        button.setForeground(Color.WHITE);
+        button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+        button.setFont(new Font("Arial", Font.BOLD, 12));
+        
+        // Personalización del UI delegate para forzar la apariencia
+        button.setUI(new BasicButtonUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Forzar el color de fondo
+                g2d.setColor(c.getBackground());
+                g2d.fillRect(0, 0, c.getWidth(), c.getHeight());
+                
+                // Forzar el texto con contraste adecuado
+                g2d.setColor(c.getForeground());
+                FontMetrics fm = g2d.getFontMetrics();
+                String text = ((JButton)c).getText();
+                int textWidth = fm.stringWidth(text);
+                int textHeight = fm.getHeight();
+                g2d.drawString(text, (c.getWidth() - textWidth) / 2, 
+                              (c.getHeight() + textHeight / 2) / 2);
+                
+                // Dibujar el borde
+                g2d.setColor(Color.WHITE);
+                g2d.drawRect(0, 0, c.getWidth() - 1, c.getHeight() - 1);
+                
+                g2d.dispose();
+            }
+        });
+        
+        // Agregar efecto hover con adaptación completa
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                Color hoverColor = new Color(
+                    Math.min(normalColor.getRed() + 30, 255),
+                    Math.min(normalColor.getGreen() + 30, 255),
+                    Math.min(normalColor.getBlue() + 30, 255)
+                );
+                button.setBackground(hoverColor);
+                button.repaint(); // Forzar repintado inmediato
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(normalColor);
+                button.repaint(); // Forzar repintado inmediato
+            }
+        });
+        
+        button.addActionListener(_ -> actions.get(algorithm).run());
+        panel.add(button);
+    }
 
-        return panel;
+    return panel;
     }
 
     private JTextField createTextField(String defaultValue) {
@@ -301,6 +429,7 @@ public class MazeSolverUI extends JFrame {
             resetCellColors();
     
             if (delayCheckBox.isSelected()) {
+                // Animación con retraso
                 new SwingWorker<Void, Cell>() {
                     @Override
                     protected Void doInBackground() {
@@ -321,12 +450,23 @@ public class MazeSolverUI extends JFrame {
                     protected void process(List<Cell> chunks) {
                         for (Cell cell : chunks) {
                             JPanel cellPanel = getCellPanel(cell.row, cell.col);
-                            cellPanel.setBackground(allPaths.indexOf(chunks) == 0 ? Color.GREEN : Color.YELLOW);
+    
+                            // Determinar el color basado en si es el camino óptimo o no
+                            boolean isOptimalPath = false;
+                            for (List<Cell> path : allPaths) {
+                                if (path == allPaths.get(0) && path.contains(cell)) {
+                                    isOptimalPath = true;
+                                    break;
+                                }
+                            }
+    
+                            cellPanel.setBackground(isOptimalPath ? Color.YELLOW : Color.GREEN);
                             mazePanel.repaint();
                         }
                     }
                 }.execute();
             } else {
+                // Sin animación
                 for (List<Cell> path : allPaths) {
                     for (Cell cell : path) {
                         JPanel cellPanel = getCellPanel(cell.row, cell.col);
