@@ -22,6 +22,75 @@ Este proyecto consiste en una aplicación desarrollada en Java que permite resol
 El objetivo principal es proporcionar una herramienta educativa y funcional que permita explorar las diferencias entre los distintos algoritmos de búsqueda y su eficiencia en la resolución de problemas de laberintos.
 
 ---
+## Herramientas y Lenguajes Utilizados
+
+### **Lenguaje de Programación**
+- **Java**:  
+  El proyecto está desarrollado completamente en Java, un lenguaje orientado a objetos ampliamente utilizado para aplicaciones de escritorio y sistemas complejos. Se aprovechan características como herencia, interfaces, colecciones y programación multihilo para implementar los algoritmos y la interfaz gráfica.
+
+---
+
+### **Biblioteca de Interfaz Gráfica**
+- **Swing**:  
+  Se utiliza la biblioteca Swing para crear la interfaz gráfica de usuario (GUI). Esta herramienta permite diseñar una interfaz interactiva donde los usuarios pueden configurar laberintos, seleccionar algoritmos y visualizar los resultados. Componentes como `JPanel`, `JButton`, `JTextField` y `JLabel` son empleados para construir la interfaz.
+
+---
+
+### **Algoritmos Implementados**
+
+1. **Método Recursivo**:
+   - Implementado en la clase `MazeSolverRecursivo`.
+   - Utiliza recursión para explorar todas las posibles rutas en el laberinto.
+   - Es útil para problemas pequeños o medianos, pero puede ser ineficiente para laberintos grandes debido al alto consumo de memoria.
+
+2. **Programación Dinámica con Caché**:
+   - Implementado en la clase `MazeSolverCache`.
+   - Almacena resultados intermedios en una estructura de caché (`Map<Cell, Integer>`) para evitar cálculos redundantes.
+   - Mejora significativamente la eficiencia en laberintos grandes.
+
+3. **BFS (Breadth-First Search)**:
+   - Implementado en la clase `MazeSolverBFS`.
+   - Explora todos los nodos vecinos antes de avanzar a niveles más profundos.
+   - Garantiza encontrar el camino más corto en grafos no ponderados.
+
+4. **DFS (Depth-First Search)**:
+   - Implementado en la clase `MazeSolverDFS`.
+   - Explora profundamente un camino hasta llegar al final o encontrar un obstáculo.
+   - No garantiza encontrar el camino más corto, pero es eficiente en términos de memoria.
+
+5. **Método Extra**:
+   - Implementado en la clase `MazeSolverExtra`.
+   - Encuentra todos los caminos posibles en el laberinto, resaltando el camino óptimo en amarillo y otros caminos alternativos en verde.
+   - Útil para análisis exhaustivos o simulaciones avanzadas.
+
+---
+
+### **Estructuras de Datos Utilizadas**
+- **Matrices (`boolean[][] grid`)**: Representan el laberinto, donde `true` indica una celda transitable y `false` una pared.
+- **Listas (`List<Cell>`)**: Almacenan los caminos encontrados por los algoritmos.
+- **Colas (`Queue<Cell>`)**: Utilizadas en BFS para explorar nodos nivel por nivel.
+- **Conjuntos (`Set<Cell>`)**: Empleados para evitar visitar celdas repetidas en DFS y métodos recursivos.
+- **Mapas (`Map<Cell, Cell>` y `Map<Cell, Integer>`)**: Utilizados para almacenar relaciones entre celdas (padres-hijos) y cachés de resultados intermedios.
+
+---
+
+### **Entorno de Desarrollo**
+- **IDE**: Visual Studio Code  
+  Este entorno de desarrollo ofrece herramientas avanzadas para depurar, ejecutar y gestionar proyectos Java.
+- **Control de Versiones**: Git  
+  Se utiliza para gestionar el código fuente y facilitar la colaboración entre los integrantes del equipo.
+
+---
+
+### **Animaciones y Visualización**
+- Las animaciones se implementan utilizando `Thread.sleep()` para simular retardos durante la visualización de los caminos encontrados.
+- Los colores se utilizan estratégicamente para diferenciar entre:
+  - Camino óptimo (verde para BFS, cian para DFS, azul para recursivo, magenta para caché, amarillo para el método Extra).
+  - Paredes (`Color.BLACK`).
+  - Celdas transitables (`Color.WHITE`).
+  - Punto de inicio y fin (`ORANGE_BRIGHT`).
+
+---
 
 ## Propuesta de Solución
 
