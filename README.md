@@ -150,9 +150,9 @@ La solución implementada consta de una aplicación Java que incluye:
 
 1. Clonar el repositorio:
    ```bash
-   git clone <URL_DEL_REPOSITORIO>
+   git clone https://github.com/AURUX909/ICC-EST-U2-PROYECTO-FINAL-ESTRU.git
    ```
-2. Abrir el proyecto en un IDE compatible con Java (Eclipse, IntelliJ IDEA).
+2. Abrir el proyecto en un IDE compatible con Java (Eclipse, IntelliJ IDEA, Visual Studio).
 3. Ejecutar la clase principal `MazeSolverUI.java` para iniciar la aplicación grafica.
 4. Configurar el laberinto y seleccionar el algoritmo deseado desde la interfaz gráfica.
 
