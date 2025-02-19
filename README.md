@@ -1,7 +1,7 @@
 ![alt text](<LOGO.jpg>)
 # INFORME DEL PROYECTO: LABERINTO RESOLVER
 
-## Carátula o Datos Generales
+## Informacion General
 **Universidad Politécnica Salesiana (UPS)**  
 Carrera de Computación  
 Materia: Estructura de Datos - Grupo 1  
@@ -153,7 +153,7 @@ La solución implementada consta de una aplicación Java que incluye:
    git clone <URL_DEL_REPOSITORIO>
    ```
 2. Abrir el proyecto en un IDE compatible con Java (Eclipse, IntelliJ IDEA).
-3. Ejecutar la clase principal `App.java` para iniciar la aplicación.
+3. Ejecutar la clase principal `MazeSolverUI.java` para iniciar la aplicación grafica.
 4. Configurar el laberinto y seleccionar el algoritmo deseado desde la interfaz gráfica.
 
 ---
